@@ -4,13 +4,33 @@ import java.io.Serializable;
 
 public class JwtResponse implements Serializable {
 
-    private final String jwt;
+    private  String AccessToken;
+    private  String refreshToken;
 
-    public JwtResponse(String jwt) {
-        this.jwt = jwt;
+
+    public String getAccessToken() {
+        return AccessToken;
     }
 
-    public String getJwt() {
-        return jwt;
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
+
+    public void setAccessToken(String accessToken) {
+        AccessToken = accessToken;
+    }
+
+    public JwtResponse() {
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public JwtResponse(String AccessToken, String refreshToken) {
+        this.AccessToken = AccessToken;
+        this.refreshToken = refreshToken;
+    }
+
+
 }

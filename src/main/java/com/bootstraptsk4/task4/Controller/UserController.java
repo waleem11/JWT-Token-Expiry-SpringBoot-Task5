@@ -48,9 +48,30 @@ class UserController {
 		final UserDetails userDetails = userDetailsService
 				.loadUserByUsername(authenticationRequest.getUsername());
 
-		final String jwt = jwtTokenUtil.generateToken(userDetails);
+		final String accessToken = jwtTokenUtil.generateToken(userDetails);
+		final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
 
-		return ResponseEntity.ok(new JwtResponse(jwt));
+		return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
+	}
+
+	@RequestMapping(value = "/refresh", method = RequestMethod.POST)
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtResponse responce) throws Exception{
+		try{
+			final String username = jwtTokenUtil.extractUsername(responce.getAccessToken());
+			final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+			if(jwtTokenUtil.validateToken(responce.getRefreshToken(),userDetails)){
+				final String accessToken = jwtTokenUtil.generateToken(userDetails);
+				final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
+
+				return ResponseEntity.ok(new JwtResponse(accessToken, refreshToken));
+			}
+			else{
+				return ResponseEntity.ok("Wrong refresh token");
+			}
+		}
+		catch (Exception e) {
+			throw new Exception();
+		}
 	}
 
 }
