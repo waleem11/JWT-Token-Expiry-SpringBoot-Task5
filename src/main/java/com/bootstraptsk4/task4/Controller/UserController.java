@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RestController
 class UserController {
 
@@ -55,7 +57,7 @@ class UserController {
 	}
 
 	@RequestMapping(value = "/refresh", method = RequestMethod.POST)
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtResponse responce) throws Exception{
+	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtResponse responce) throws Exception {
 		try{
 			final String username = jwtTokenUtil.extractUsername(responce.getAccessToken());
 			final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -69,8 +71,8 @@ class UserController {
 				return ResponseEntity.ok("Wrong refresh token");
 			}
 		}
-		catch (Exception e) {
-			throw new Exception();
+		catch (BadCredentialsException e) {
+			throw new Exception("Invalid Refresh Token", e);
 		}
 	}
 
